@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Store</title>
+
+  <style>
+
+    body{
+      font-family: Arial;
+      margin:0;
+      padding:0;
+      background:#f5f5f5;
+    }
+
+    header{
+      background:black;
+      color:white;
+      padding:15px;
+      text-align:center;
+    }
+
+    #search{
+      width:300px;
+      padding:10px;
+      margin:20px auto;
+      display:block;
+      border-radius:5px;
+      border:1px solid #ccc;
+    }
+
+    .container{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:20px;
+      padding:20px;
+    }
+
+    .card{
+      background:white;
+      width:250px;
+      border-radius:10px;
+      padding:15px;
+      box-shadow:0 0 10px rgba(0,0,0,0.1);
+      text-align:center;
+      cursor:pointer;
+    }
+
+    .card img{
+      width:100%;
+      height:200px;
+      object-fit:cover;
+      border-radius:10px;
+    }
+
+    button{
+      background:black;
+      color:white;
+      border:none;
+      padding:10px 20px;
+      margin-top:10px;
+      cursor:pointer;
+      border-radius:5px;
+    }
+
+    button:hover{
+      background:#333;
+    }
+
+    #details{
+      background:white;
+      margin:20px;
+      padding:20px;
+      border-radius:10px;
+      text-align:center;
+    }
+
+    #cart{
+      background:white;
+      margin:20px;
+      padding:20px;
+      border-radius:10px;
+    }
+
+    h2{
+      text-align:center;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Online Shopping Store</h1>
+  </header>
+
+  <input 
+    type="text"
+    id="search"
+    placeholder="Search Products..."
+    onkeyup="searchProducts()"
+  >
+
+  <div class="container" id="products"></div>
+
+  <div id="details">
+    <h2>Product Details</h2>
+    <p>Click Any Product</p>
+  </div>
+
+  <div id="cart">
+
+    <h2>Cart Items</h2>
+
+    <ul id="cartItems"></ul>
+
+    <h3 id="total">Total: ₹0</h3>
+
+    <button onclick="checkout()">Checkout</button>
+
+  </div>
+
+  <script>
+
+    const products = [
+
+      {
+        id:1,
+        name:"Smart Phone",
+        price:15000,
+        image:"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
+        description:"6GB RAM, 128GB Storage, Android Smartphone"
+      },
+
+      {
+        id:2,
+        name:"Laptop",
+        price:55000,
+        image:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853",
+        description:"8GB RAM, 512GB SSD, Intel i5 Processor, Full HD Display"
+      },
+
+      {
+        id:3,
+        name:"Headphones",
+        price:2000,
+        image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+        description:"Wireless Headphones with Noise Cancellation"
+      },
+
+      {
+        id:4,
+        name:"Bottle",
+        price:100,
+        image:"https://th.bing.com/th/id/OIP.DkZRcjUu8lL6xYw2G5Mz2wHaHa?w=192&h=192&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+        description:"1 Litre Water Bottle"
+      }
+
+    ];
+
+    let cart = [];
+
+    const productContainer = document.getElementById("products");
+
+    function showProducts(items){
+
+      productContainer.innerHTML = "";
+
+      items.forEach(product => {
+
+        productContainer.innerHTML += `
+
+          <div class="card" onclick='showDetails(${JSON.stringify(product)})'>
+
+            <img src="${product.image}">
+
+            <h3>${product.name}</h3>
+
+            <p>₹${product.price}</p>
+
+            <button onclick='addToCart(${JSON.stringify(product)})'>
+              Add To Cart
+            </button>
+
+          </div>
+
+        `;
+
+      });
+
+    }
+
+    showProducts(products);
+
+    function searchProducts(){
+
+      const searchValue = document
+        .getElementById("search")
+        .value
+        .toLowerCase();
+
+      const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchValue)
+      );
+
+      showProducts(filteredProducts);
+
+    }
+
+    function showDetails(product){
+
+      document.getElementById("details").innerHTML = `
+
+        <h2>${product.name}</h2>
+
+        <img 
+          src="${product.image}" 
+          style="
+            width:250px;
+            height:250px;
+            object-fit:cover;
+            border-radius:10px;
+          "
+        >
+
+        <h3>Price: ₹${product.price}</h3>
+
+        <p>${product.description}</p>
+
+      `;
+
+    }
+
+    function addToCart(product){
+
+      cart.push(product);
+
+      displayCart();
+
+    }
+
+    function displayCart(){
+
+      const cartItems = document.getElementById("cartItems");
+
+      const total = document.getElementById("total");
+
+      cartItems.innerHTML = "";
+
+      let totalPrice = 0;
+
+      cart.forEach(item => {
+
+        totalPrice += item.price;
+
+        cartItems.innerHTML += `
+          <li>
+            ${item.name} - ₹${item.price}
+          </li>
+        `;
+
+      });
+
+      total.innerText = "Total: ₹" + totalPrice;
+
+    }
+
+    function checkout(){
+
+      if(cart.length === 0){
+
+        alert("Cart is Empty");
+
+        return;
+
+      }
+
+      alert("Order Placed Successfully");
+
+      cart = [];
+
+      displayCart();
+
+    }
+
+  </script>
+
+</body>
+</html>
